@@ -9,7 +9,7 @@ function naverNotice(message){
  let el=document.getElementById('naverNotice');if(!el){el=document.createElement('div');el.id='naverNotice';el.style.cssText='position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:10000;background:#fff4e5;border:1px solid #f5b85b;border-radius:10px;padding:14px;max-width:650px;font:14px Malgun Gothic;line-height:1.6';document.body.appendChild(el);}el.textContent=message;
 }
 window.__naverAuthFailed=false;
-window.navermap_authFailure=function(){window.__naverAuthFailed=true;const notify=()=>naverNotice('네이버지도 인증 실패: Client ID k0gkd07nf4, Dynamic Map 활성화 및 Web 서비스 URL을 확인하세요. GitHub Pages 주소(https://아이디.github.io)가 Web 서비스 URL에 등록되어 있는지 확인하세요. 파일을 더블클릭해 직접 열면 인증되지 않습니다.');if(document.body)notify();else document.addEventListener('DOMContentLoaded',notify);};
+window.navermap_authFailure=function(){window.__naverAuthFailed=true;const notify=()=>naverNotice('네이버지도 인증 실패: Client ID k0gkd07nf4, Dynamic Map 활성화 및 Web 서비스 URL을 확인하세요. GitHub Pages 주소(https://sylee000603-ops.github.io)가 Web 서비스 URL에 등록되어 있는지 확인하세요. 파일을 더블클릭해 직접 열면 인증되지 않습니다.');if(document.body)notify();else document.addEventListener('DOMContentLoaded',notify);};
 </script>
 <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=k0gkd07nf4&language=ko" onerror="window.__naverAuthFailed=true"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
@@ -368,7 +368,7 @@ const L = (() => {
     getBounds(){const pts=[];this.items.forEach(x=>{const b=x.getBounds().raw;pts.push(b.getSW(),b.getNE());});return new Bounds(pts);}
   }
   class MapView extends Group {
-    constructor(id,opts){super();this.container=document.getElementById(id);this.raw=new N.Map(id,{center:ll([37.24,127.18]),zoom:11,minZoom:5,maxZoom:19,zoomControl:false,mapTypeControl:false,scaleControl:true,logoControl:true,mapDataControl:true});this._map=this;this.panes={};}
+    constructor(id,opts){super();this.container=document.getElementById(id);this.raw=new N.Map(id,{center:ll([37.24,127.18]),zoom:11,minZoom:6,maxZoom:19,zoomControl:false,mapTypeControl:false,scaleControl:true,logoControl:true,mapDataControl:true});this._map=this;this.panes={};}
     setView(p,z){this.raw.setCenter(ll(p));if(z!=null)this.raw.setZoom(Math.round(z),false);return this;}
     getZoom(){return this.raw.getZoom();}
     setZoom(z){this.raw.setZoom(Math.round(z),false);return this;}
@@ -423,7 +423,7 @@ const L = (() => {
   }
   class Control {
     constructor(o={}){this.options=o;}
-    addTo(m){const el=this.onAdd(m);el.classList.add('naver-custom-control');m.raw.controls[N.Position[this.options.position==='bottomleft'?'BOTTOM_LEFT':'TOP_RIGHT']].push(el);return this;}
+    addTo(m){const el=this.onAdd(m);el.classList.add('naver-custom-control');const pos=N.Position[this.options.position==='bottomleft'?'BOTTOM_LEFT':'TOP_RIGHT'];const put=()=>{const c=m.raw.controls;if(c&&c[pos]){c[pos].push(el);return true;}return false;};if(!put())N.Event.once(m.raw,'init',put);return this;}
   }
   const stop=el=>{['click','dblclick','mousedown','pointerdown','touchstart'].forEach(e=>el.addEventListener(e,x=>x.stopPropagation()));};
   function layers(bases,overlays,o){const c=new Control(o);c.onAdd=m=>{const box=document.createElement('details');box.className='naver-layer-control';box.innerHTML='<summary>지도·경계 설정</summary>';Object.entries(bases).forEach(([name,type],i)=>{const row=document.createElement('label'),input=document.createElement('input');input.type='radio';input.name='naver-basemap';input.checked=m.raw.getMapTypeId()===type;input.onchange=()=>{m.raw.setMapTypeId(type);try{localStorage.setItem('yongin_bus_naver_basemap',type);}catch(e){}};row.append(input,document.createTextNode(name));box.append(row);});Object.entries(overlays).forEach(([name,layer])=>{const row=document.createElement('label'),input=document.createElement('input');input.type='checkbox';input.checked=m.hasLayer(layer);input.onchange=()=>input.checked?m.addLayer(layer):m.removeLayer(layer);row.append(input,document.createTextNode(name));box.append(row);});stop(box);return box;};return c;}
@@ -452,7 +452,7 @@ const TYPECOLOR = {
 };
 const badgeClass = t => 'badge b-'+t;
 
-const map = L.map('map',{preferCanvas:true, renderer:L.canvas({tolerance:6}), zoomControl:false, zoomSnap:0.25, zoomDelta:0.25, wheelPxPerZoomLevel:180, minZoom:5, maxZoom:19}).setView([37.24,127.18],11);
+const map = L.map('map',{preferCanvas:true, renderer:L.canvas({tolerance:6}), zoomControl:false, zoomSnap:0.25, zoomDelta:0.25, wheelPxPerZoomLevel:180, minZoom:6, maxZoom:19}).setView([37.24,127.18],11);
 // ===== 공통 노선 그리기: 경로선(마우스 올리면 번호, 클릭하면 노선 요약) + 기점·종점(네모) + 정류장(동그라미) =====
 map.createPane('routeTermPane'); map.getPane('routeTermPane').style.zIndex=630;
 // 정류장 동그라미는 확대(줌 13 이상)했을 때만 표시합니다. 캔버스를 하나만 써야 경로선 마우스 인식이 막히지 않습니다.
